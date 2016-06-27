@@ -11,7 +11,7 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 
 public class Main {
-	public static final int PONTOS = 8;
+	public static final int PONTOS = 4;
 	private static double [] pontosX = new double[PONTOS];
 	private static double [] pontosY = new double[PONTOS];
 	
@@ -22,7 +22,7 @@ public class Main {
 		int cont=0;
 		double angle = 0;
 		System.out.println("COMEÇOU");
-				while(angle < 360) {
+				while(angle < 180) {
 					if(sonic.getDistance() != 255){
 						System.out.println("Pegando distancia.." + sonic.getDistance());
 						geraPontos(sonic.getDistance(), angle, cont);
@@ -66,21 +66,16 @@ public class Main {
 	public static void createJson() throws IOException{
 		JSONObject object = new JSONObject();
 		JSONArray pontosJSON = new JSONArray();
-		JSONObject obj = new JSONObject();
 		System.out.println("Mostrando valores dos pontos:\n-----------------------------------");
 		for(int i=0; i<pontosX.length ; i++){
 			System.out.println("("+pontosX[i]+";"+pontosY[i]+")");
-			object.accumulate("x", pontosX[i]);
-			object.accumulate("y", pontosY[i]);
-			
+			object.put("x", pontosX[i]);
+			object.put("y", pontosY[i]);
+			pontosJSON.put(i, object);
 		}
-		pontosJSON.put(object);
-		obj.put("pontos", pontosJSON);
 		
-
-
 		FileWriter file = new FileWriter("C:/Users/ADM/Documents/TCC/codigo/mapping/mapa.json");                
-		obj.write(file);
+		pontosJSON.write(file);
 		file.flush();
 		file.close();
 		
