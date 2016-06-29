@@ -3,7 +3,6 @@ package controle;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import json.JSONArray;
 import json.JSONObject;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
@@ -11,7 +10,7 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 
 public class Main {
-	public static final int PONTOS = 4;
+	public static final int PONTOS = 72;
 	private static double [] pontosX = new double[PONTOS];
 	private static double [] pontosY = new double[PONTOS];
 	
@@ -22,14 +21,14 @@ public class Main {
 		int cont=0;
 		double angle = 0;
 		System.out.println("COMEÇOU");
-				while(angle < 180) {
+				while(angle < 360) {
 					if(sonic.getDistance() != 255){
-						System.out.println("Pegando distancia.." + sonic.getDistance());
-						geraPontos(sonic.getDistance(), angle, cont);
+						System.out.println("Pegando distancia.." + sonic.getDistance()+9);
+						geraPontos(sonic.getDistance()+7, angle, cont);
 						System.out.println("Salvou ponto..");
-						Thread.sleep(500);
-						main.rotate(45);
-						angle +=45;
+						Thread.sleep(100);
+						main.rotate(5);
+						angle +=5;
 						System.out.println("Girou..");
 						System.out.println("Angulo atual:" +angle + "\ncont atual:"+cont);
 						cont++;
@@ -64,14 +63,12 @@ public class Main {
 	}
 
 	public static void createJson() throws IOException{
-		JSONObject object = new JSONObject();
-		JSONArray pontosJSON = new JSONArray();
+		JSONObject pontosJSON = new JSONObject();
 		System.out.println("Mostrando valores dos pontos:\n-----------------------------------");
 		for(int i=0; i<pontosX.length ; i++){
 			System.out.println("("+pontosX[i]+";"+pontosY[i]+")");
-			object.put("x", pontosX[i]);
-			object.put("y", pontosY[i]);
-			pontosJSON.put(i, object);
+			pontosJSON.accumulate("pontoX", pontosX[i]);
+			pontosJSON.accumulate("pontoY", pontosY[i]);
 		}
 		
 		FileWriter file = new FileWriter("C:/Users/ADM/Documents/TCC/codigo/mapping/mapa.json");                
